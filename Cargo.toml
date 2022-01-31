@@ -1,0 +1,14 @@
+[package]
+authors = ["Lastryo <Lastryo@live.com>"]
+edition = "2021"
+name = "Archiver"
+version = "0.1.0"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+eframe = {version = "*", default-features = false, features = ["default_fonts", "egui_glium"]}
+egui = "0.16.1"
+image = "0.23.14"
+walkdir = "2"
+zip = "0.5.13"

@@ -8,7 +8,9 @@ version = "0.1.0"
 dependencies = [
  "eframe",
  "egui",
+ "im-native-dialog",
  "image",
+ "native-dialog",
  "walkdir",
  "zip",
 ]
@@ -430,6 +432,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "dirs-next"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b98cf8ebf19c3d1b223e151f99a4f9f0690dca41414773390fc824184ac833e1"
+dependencies = [
+ "cfg-if 1.0.0",
+ "dirs-sys-next",
+]
+
+[[package]]
+name = "dirs-sys-next"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4ebda144c4fe02d1f7ea1a7d9641b6fc6b580adcfa024ae48797ecdeb6825b4d"
+dependencies = [
+ "libc",
+ "redox_users",
+ "winapi",
+]
+
+[[package]]
 name = "dispatch"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -722,6 +745,18 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9e0384b61958566e926dc50660321d12159025e767c18e043daf26b70104c39"
 
 [[package]]
+name = "im-native-dialog"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "aeb3707e7e33ce52f3f116e81339ec0d776c80f937dab20def88fdca007cf808"
+dependencies = [
+ "crossbeam-channel",
+ "log",
+ "native-dialog",
+ "thiserror",
+]
+
+[[package]]
 name = "image"
 version = "0.23.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -905,6 +940,25 @@ version = "0.3.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
 dependencies = [
+ "winapi",
+]
+
+[[package]]
+name = "native-dialog"
+version = "0.5.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "716291d444588158221ce5b7836ead33e0d1e053157735d277212eff029cb7d6"
+dependencies = [
+ "cocoa",
+ "dirs-next",
+ "objc",
+ "objc-foundation",
+ "objc_id",
+ "once_cell",
+ "raw-window-handle 0.3.4",
+ "thiserror",
+ "wfd",
+ "which",
  "winapi",
 ]
 
@@ -1215,6 +1269,16 @@ dependencies = [
 
 [[package]]
 name = "raw-window-handle"
+version = "0.3.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e28f55143d0548dad60bb4fbdc835a3d7ac6acc3324506450c5fdd6e42903a76"
+dependencies = [
+ "libc",
+ "raw-window-handle 0.4.2",
+]
+
+[[package]]
+name = "raw-window-handle"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fba75eee94a9d5273a68c9e1e105d9cffe1ef700532325788389e5a83e2522b7"
@@ -1254,6 +1318,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8383f39639269cde97d255a32bdb68c047337295414940c68bdd30c2e13203ff"
 dependencies = [
  "bitflags",
+]
+
+[[package]]
+name = "redox_users"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "528532f3d801c87aec9def2add9ca802fe569e44a544afe633765267840abe64"
+dependencies = [
+ "getrandom",
+ "redox_syscall",
 ]
 
 [[package]]
@@ -1626,6 +1700,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8b77fdfd5a253be4ab714e4ffa3c49caf146b4de743e97510c0656cf90f1e8e"
 
 [[package]]
+name = "wfd"
+version = "0.1.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e713040b67aae5bf1a0ae3e1ebba8cc29ab2b90da9aa1bff6e09031a8a41d7a8"
+dependencies = [
+ "libc",
+ "winapi",
+]
+
+[[package]]
+name = "which"
+version = "4.2.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2a5a7e487e921cf220206864a94a89b6c6905bfc19f1057fa26a4cb360e5c1d2"
+dependencies = [
+ "either",
+ "lazy_static",
+ "libc",
+]
+
+[[package]]
 name = "widestring"
 version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1685,7 +1780,7 @@ dependencies = [
  "objc",
  "parking_lot",
  "percent-encoding",
- "raw-window-handle",
+ "raw-window-handle 0.4.2",
  "smithay-client-toolkit",
  "wasm-bindgen",
  "wayland-client",

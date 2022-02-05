@@ -1,21 +1,29 @@
+use std::path::PathBuf;
+
 use eframe::{egui::CentralPanel, egui::CtxRef, epi::App, epi::Frame};
+use im_native_dialog::ImNativeFileDialog;
 
 mod zip_archiver;
 
+#[derive()]
 pub struct Archiver {
-    directory: String,
-    destination: String,
+    directory_path: PathBuf,
+    destination_path: PathBuf,
+    directory_path_dialog: ImNativeFileDialog<Option<PathBuf>>,
+    destination_path_dialog: ImNativeFileDialog<Option<PathBuf>>,
     extension: Extension,
     group: bool,
 }
 
 impl Archiver {
-    pub fn new(directory: String, destination: String, ext: Extension, group: bool) -> Archiver {
+    pub fn new(ext: Extension, group: bool) -> Archiver {
         Archiver {
-            directory: directory,
-            destination: destination,
             extension: ext,
             group: group,
+            destination_path: Default::default(),
+            directory_path: Default::default(),
+            directory_path_dialog: Default::default(),
+            destination_path_dialog: Default::default(),
         }
     }
 }
@@ -29,6 +37,29 @@ impl App for Archiver {
     ) {
     }
     fn update(&mut self, ctx: &CtxRef, _frame: &Frame) {
+        if let Some(result) = self.directory_path_dialog.check() {
+            match result {
+                Ok(Some(path)) => self.directory_path = path,
+                Ok(None) => {}
+                Err(err) => {
+                    eprintln!("error selecting xplane_path: {}", err)
+                }
+            }
+        }
+
+        if let Some(result) = self.destination_path_dialog.check() {
+            match result {
+                Ok(Some(path)) => self.destination_path = path,
+                Ok(None) => {}
+                Err(err) => {
+                    eprintln!("error selecting xplane_path: {}", err)
+                }
+            }
+        }
+
+        let directory_path = &self.directory_path.to_string_lossy().to_string();
+        let destination_path = &self.destination_path.to_string_lossy().to_string();
+
         CentralPanel::default().show(ctx, |ui| {
             ui.heading("Create archive");
             ui.horizontal(|ui| {
@@ -42,36 +73,65 @@ impl App for Archiver {
                 ui.radio_value(&mut self.group, false, "One");
                 ui.radio_value(&mut self.group, true, "Group");
             });
-            
+
+            ui.horizontal(|ui| {
+                ui.label("directory: ");
+                ui.horizontal(|ui| {
+                    ui.label(directory_path);
+                    // ui.text_edit_singleline(&mut self.directory);
+                    if ui.button("Browse").clicked() {
+                        let location = self
+                            .directory_path
+                            .parent()
+                            .map(|location| location.to_path_buf());
+
+                        let repaint_signal = _frame.request_repaint();
+                        self.directory_path_dialog
+                            .with_callback(move |_| repaint_signal)
+                            .open_single_dir(location)
+                            .expect("Unable to open file_path dialog");
+                    }
+                });
+            });
+
             let group_match = match self.group {
                 true => true,
                 false => {
                     ui.horizontal(|ui| {
                         ui.label("destination: ");
-                        ui.text_edit_singleline(&mut self.destination);
+                        ui.horizontal(|ui| {
+                            ui.label(destination_path);
+                            if ui.button("Browse").clicked() {
+                                let location = self
+                                    .destination_path
+                                    .parent()
+                                    .map(|location| location.to_path_buf());
+
+                                let repaint_signal = _frame.request_repaint();
+                                self.destination_path_dialog
+                                    .with_callback(move |_| repaint_signal)
+                                    .open_single_dir(location)
+                                    .expect("Unable to open file_path dialog");
+                            }
+                        });
                     });
 
                     false
                 }
             };
 
-            ui.horizontal(|ui| {
-                ui.label("directory: ");
-                ui.text_edit_singleline(&mut self.directory);
-            });
-
             if ui.button("Create").clicked() {
                 match group_match {
                     true => {
                         zip_archiver::create_archives(
-                            &self.directory,
+                            &directory_path,
                             &get_extention(&self.extension),
                         );
                     }
                     false => {
                         zip_archiver::create_archive(
-                            &self.directory,
-                            &self.destination,
+                            &directory_path,
+                            &destination_path,
                             &get_extention(&self.extension),
                         );
                     }

@@ -7,7 +7,7 @@ use egui::Vec2;
 use std::io;
 
 fn main() {
-    let app = ui_app::Archiver::new("".to_string(), "".to_string(), ui_app::Extension::Zip, false);
+    let app = ui_app::Archiver::new(ui_app::Extension::Zip, false);
     let icon = image::open("archiver.ico")
         .expect("Failed to open icon path")
         .to_rgba8();
